@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = 'lokeshk/order-service'
+        DOCKER_IMAGE = 'lokeshkdevops/order-service'
         SERVICE_PATH = 'cicd-microservices/order-service'
     }
 
