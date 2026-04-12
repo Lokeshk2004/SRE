@@ -854,8 +854,7 @@ Edit `user-service/src/index.js` — add a new seed user:
 
 ```bash
 # Add this user to the users array in user-service/src/index.js
-# { id: 6, name: 'Frank Demo', email: 'frank@example.com', role: 'customer', createdAt: '2025-04-12T00:00:00Z' }
-```
+ "{ id: 6, name: 'Frank', email: 'frank@example.com', role: 'customer', createdAt: '2025-04-12T00:00:00Z' }"
 
 ### 11.2 Commit and push
 
