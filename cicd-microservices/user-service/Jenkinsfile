@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = 'lokeshkdevops/user-service'
-        DOCKER_TAG = "${BUILD_NUMBER}"
+        DOCKER_TAG = "${env.GIT_SHORT_COMMIT}"  
     }
 
     stages {
