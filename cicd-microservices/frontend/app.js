@@ -1,8 +1,4 @@
-// =========================================
-// MicroDash — Frontend Dashboard Application
-// =========================================
 
-// API Base URLs — these are routed through the Ingress controller
 const API_BASE = {
   users: '/api/users',
   orders: '/api/orders',
