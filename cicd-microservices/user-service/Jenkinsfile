@@ -3,7 +3,8 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = 'lokeshkdevops/user-service'
-        DOCKER_TAG = "${BUILD_NUMBER}-${env.GIT_SHORT_COMMIT}"    }
+        DOCKER_TAG = "${BUILD_NUMBER}"
+    }
 
     stages {
 
@@ -63,54 +64,48 @@ pipeline {
             }
         }
 
-        // stage('Deploy to Kubernetes') {
-        //     steps {
-        //         withCredentials([file(
-        //             credentialsId: 'kubeconfig-credentials',
-        //             variable: 'KUBECONFIG'
-        //         )]) {
-        //             sh """
-        //             kubectl apply -f cicd-microservices/user-service/k8s/deployment.yaml
-        //             kubectl apply -f cicd-microservices/user-service/k8s/service.yaml
-        //             kubectl rollout status deployment/user-service -n microservices --timeout=120s
-        //             """
-        //         }
-        //     }
-        // }
-
         stage('Deploy to Kubernetes') {
-    steps {
-        withCredentials([file(credentialsId: 'kubeconfig-credentials', variable: 'KUBECONFIG_FILE')]) {
-            sh '''
-            export KUBECONFIG=$KUBECONFIG_FILE
+            steps {
+                withCredentials([file(credentialsId: 'kubeconfig-credentials', variable: 'KUBECONFIG_FILE')]) {
+                    sh '''
+                    export KUBECONFIG=$KUBECONFIG_FILE
 
-           kubectl set image deployment/user-service user-service=${DOCKER_IMAGE}:${DOCKER_TAG} -n microservices
-           kubectl rollout status deployment/user-service -n microservices --timeout=120s
-            '''
+                    echo "Updating deployment..."
+
+                    kubectl set image deployment/user-service \
+                    user-service=${DOCKER_IMAGE}:${DOCKER_TAG} \
+                    -n microservices
+
+                    kubectl rollout status deployment/user-service \
+                    -n microservices --timeout=120s
+                    '''
+                }
+            }
+        }
+
+        stage('Verify Deployment') {
+            steps {
+                withCredentials([file(
+                    credentialsId: 'kubeconfig-credentials',
+                    variable: 'KUBECONFIG_FILE'
+                )]) {
+                    sh '''
+                    export KUBECONFIG=$KUBECONFIG_FILE
+
+                    kubectl get pods -n microservices -l app=user-service
+                    kubectl get svc -n microservices -l app=user-service
+                    '''
+                }
+            }
         }
     }
-}
-       stage('Verify Deployment') {
-    steps {
-        withCredentials([file(
-            credentialsId: 'kubeconfig-credentials',
-            variable: 'KUBECONFIG_FILE'
-        )]) {
-            sh '''
-            export KUBECONFIG=$KUBECONFIG_FILE
 
-            kubectl get pods -n microservices -l app=user-service
-            kubectl get svc -n microservices -l app=user-service
-            '''
-        }
-    }
-}
     post {
         success {
-            echo 'user Service pipeline completed successfully!'
+            echo 'User Service pipeline completed successfully!'
         }
         failure {
-            echo 'user Service pipeline failed. chck logs.'
+            echo 'User Service pipeline failed. Check logs.'
         }
         always {
             script {
