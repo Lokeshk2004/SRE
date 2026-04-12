@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Microservices Dashboard — monitor and manage User, Order, and Payment services in real-time.">
+  <title>Microservices Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">
+          <span class="logo-icon">⚡</span>
+          <span class="logo-text">MicroDash</span>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="#" class="nav-item active" data-section="dashboard" id="nav-dashboard">
+          <span class="nav-icon">📊</span>
+          <span>Dashboard</span>
+        </a>
+        <a href="#" class="nav-item" data-section="users" id="nav-users">
+          <span class="nav-icon">👥</span>
+          <span>Users</span>
+        </a>
+        <a href="#" class="nav-item" data-section="orders" id="nav-orders">
+          <span class="nav-icon">📦</span>
+          <span>Orders</span>
+        </a>
+        <a href="#" class="nav-item" data-section="payments" id="nav-payments">
+          <span class="nav-icon">💳</span>
+          <span>Payments</span>
+        </a>
+        <a href="#" class="nav-item" data-section="health" id="nav-health">
+          <span class="nav-icon">🏥</span>
+          <span>Health</span>
+        </a>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="status-indicator">
+          <span class="status-dot" id="overall-status-dot"></span>
+          <span id="overall-status-text">Checking...</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content" id="main-content">
+      <!-- Header -->
+      <header class="header">
+        <div class="header-left">
+          <h1 id="page-title">Dashboard</h1>
+          <p class="header-subtitle" id="page-subtitle">Overview of all microservices</p>
+        </div>
+        <div class="header-right">
+          <button class="btn btn-refresh" id="btn-refresh" title="Refresh Data">🔄 Refresh</button>
+          <span class="timestamp" id="last-updated">Last updated: —</span>
+        </div>
+      </header>
+
+      <!-- Dashboard Section -->
+      <section class="section" id="section-dashboard">
+        <div class="stats-grid">
+          <div class="stat-card" id="stat-users">
+            <div class="stat-icon">👥</div>
+            <div class="stat-info">
+              <span class="stat-value" id="stat-users-count">—</span>
+              <span class="stat-label">Total Users</span>
+            </div>
+          </div>
+          <div class="stat-card" id="stat-orders">
+            <div class="stat-icon">📦</div>
+            <div class="stat-info">
+              <span class="stat-value" id="stat-orders-count">—</span>
+              <span class="stat-label">Total Orders</span>
+            </div>
+          </div>
+          <div class="stat-card" id="stat-payments">
+            <div class="stat-icon">💳</div>
+            <div class="stat-info">
+              <span class="stat-value" id="stat-payments-count">—</span>
+              <span class="stat-label">Total Payments</span>
+            </div>
+          </div>
+          <div class="stat-card" id="stat-revenue">
+            <div class="stat-icon">💰</div>
+            <div class="stat-info">
+              <span class="stat-value" id="stat-revenue-amount">—</span>
+              <span class="stat-label">Revenue</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="cards-grid">
+          <div class="card" id="card-services-health">
+            <div class="card-header">
+              <h2>Service Health</h2>
+            </div>
+            <div class="card-body" id="health-summary"></div>
+          </div>
+          <div class="card" id="card-recent-orders">
+            <div class="card-header">
+              <h2>Recent Orders</h2>
+            </div>
+            <div class="card-body" id="recent-orders-list"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Users Section -->
+      <section class="section hidden" id="section-users">
+        <div class="card">
+          <div class="card-header">
+            <h2>All Users</h2>
+          </div>
+          <div class="card-body">
+            <div class="table-wrapper">
+              <table class="data-table" id="users-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Created</th>
+                  </tr>
+                </thead>
+                <tbody id="users-table-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Orders Section -->
+      <section class="section hidden" id="section-orders">
+        <div class="card">
+          <div class="card-header">
+            <h2>All Orders</h2>
+          </div>
+          <div class="card-body">
+            <div class="table-wrapper">
+              <table class="data-table" id="orders-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>User ID</th>
+                    <th>Product</th>
+                    <th>Qty</th>
+                    <th>Price</th>
+                    <th>Status</th>
+                    <th>Created</th>
+                  </tr>
+                </thead>
+                <tbody id="orders-table-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Payments Section -->
+      <section class="section hidden" id="section-payments">
+        <div class="card">
+          <div class="card-header">
+            <h2>All Payments</h2>
+          </div>
+          <div class="card-body">
+            <div class="table-wrapper">
+              <table class="data-table" id="payments-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Order ID</th>
+                    <th>Amount</th>
+                    <th>Method</th>
+                    <th>Status</th>
+                    <th>Transaction ID</th>
+                    <th>Created</th>
+                  </tr>
+                </thead>
+                <tbody id="payments-table-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Health Section -->
+      <section class="section hidden" id="section-health">
+        <div class="health-grid" id="health-detail-grid"></div>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

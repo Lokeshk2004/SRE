@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: microservices
+  labels:
+    project: cicd-microservices
+    purpose: application
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: monitoring
+  labels:
+    project: cicd-microservices
+    purpose: monitoring
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: logging
+  labels:
+    project: cicd-microservices
+    purpose: logging

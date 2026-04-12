@@ -1,0 +1,83 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_HUB_CREDENTIALS = credentials('docker-hub-credentials')
+        DOCKER_IMAGE = 'myprojectuser/user-service'
+        DOCKER_TAG = "${BUILD_NUMBER}-${GIT_COMMIT.take(7)}"
+        KUBECONFIG_CREDENTIALS = credentials('kubeconfig-credentials')
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+                echo "Checked out branch: ${env.BRANCH_NAME ?: 'main'}"
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                dir('user-service') {
+                    sh 'npm ci'
+                }
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                dir('user-service') {
+                    sh 'npm test'
+                }
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                dir('user-service') {
+                    sh "docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} -t ${DOCKER_IMAGE}:latest ."
+                }
+            }
+        }
+
+        stage('Push Docker Image') {
+            steps {
+                sh "echo ${DOCKER_HUB_CREDENTIALS_PSW} | docker login -u ${DOCKER_HUB_CREDENTIALS_USR} --password-stdin"
+                sh "docker push ${DOCKER_IMAGE}:${DOCKER_TAG}"
+                sh "docker push ${DOCKER_IMAGE}:latest"
+            }
+        }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                withCredentials([file(credentialsId: 'kubeconfig-credentials', variable: 'KUBECONFIG')]) {
+                    sh "kubectl apply -f user-service/k8s/deployment.yaml"
+                    sh "kubectl apply -f user-service/k8s/service.yaml"
+                    sh "kubectl rollout status deployment/user-service -n microservices --timeout=120s"
+                }
+            }
+        }
+
+        stage('Verify Deployment') {
+            steps {
+                withCredentials([file(credentialsId: 'kubeconfig-credentials', variable: 'KUBECONFIG')]) {
+                    sh "kubectl get pods -n microservices -l app=user-service"
+                    sh "kubectl get svc -n microservices -l app=user-service"
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'User Service pipeline completed successfully!'
+        }
+        failure {
+            echo 'User Service pipeline failed. Check logs for details.'
+        }
+        always {
+            sh 'docker logout || true'
+            cleanWs()
+        }
+    }
+}
