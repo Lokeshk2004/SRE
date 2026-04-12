@@ -3,8 +3,7 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = 'lokeshkdevops/payment-service'
-        DOCKER_TAG = "${BUILD_NUMBER}"
-    }
+        DOCKER_TAG = "${BUILD_NUMBER}-${env.GIT_SHORT_COMMIT}"    }
 
     stages {
 
@@ -70,12 +69,14 @@ pipeline {
                     sh '''
                     export KUBECONFIG=$KUBECONFIG_FILE
 
-                    echo "Using kubeconfig:"
-                    kubectl config view
+                    echo "Updating deployment..."
 
-                    kubectl apply -f cicd-microservices/payment-service/k8s/deployment.yaml
-                    kubectl apply -f cicd-microservices/payment-service/k8s/service.yaml
-                    kubectl rollout status deployment/payment-service -n microservices --timeout=120s
+                    kubectl set image deployment/payment-service \
+                    payment-service=${DOCKER_IMAGE}:${DOCKER_TAG} \
+                    -n microservices
+
+                    kubectl rollout status deployment/payment-service \
+                    -n microservices --timeout=120s
                     '''
                 }
             }
