@@ -3,8 +3,7 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = 'lokeshkdevops/frontend'
-        DOCKER_TAG = "${BUILD_NUMBER}"
-    }
+        DOCKER_TAG = "${BUILD_NUMBER}-${env.GIT_SHORT_COMMIT}"      }
 
     stages {
 
@@ -54,12 +53,14 @@ pipeline {
                     sh '''
                     export KUBECONFIG=$KUBECONFIG_FILE
 
-                    echo "Using kubeconfig:"
-                    kubectl config view
+                    echo "Updating frontend deployment..."
 
-                    kubectl apply -f cicd-microservices/frontend/k8s/deployment.yaml
-                    kubectl apply -f cicd-microservices/frontend/k8s/service.yaml
-                    kubectl rollout status deployment/frontend -n microservices --timeout=120s
+                    kubectl set image deployment/frontend \
+                    frontend=${DOCKER_IMAGE}:${DOCKER_TAG} \
+                    -n microservices
+
+                    kubectl rollout status deployment/frontend \
+                    -n microservices --timeout=120s
                     '''
                 }
             }
@@ -84,7 +85,7 @@ pipeline {
             echo 'Frontend pipeline completed successfully!'
         }
         failure {
-            echo 'Frontend pipeline failed. Check logs for details.'
+            echo 'Frontend pipeline failed. Check logs.'
         }
         always {
             script {
