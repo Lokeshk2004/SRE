@@ -17,7 +17,7 @@ pipeline {
                         returnStdout: true
                     ).trim()
 
-                    env.DOCKER_TAG = "${BUILD_NUMBER}-${env.GIT_SHORT_COMMIT}"
+                    env.DOCKER_TAG = "${env.GIT_SHORT_COMMIT}"
                 }
                 echo "Checked out commit: ${env.GIT_SHORT_COMMIT}"
             }
