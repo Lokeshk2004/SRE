@@ -64,21 +64,37 @@ pipeline {
             }
         }
 
-        stage('Deploy to Kubernetes') {
-            steps {
-                withCredentials([file(
-                    credentialsId: 'kubeconfig-credentials',
-                    variable: 'KUBECONFIG'
-                )]) {
-                    sh """
-                    kubectl apply -f cicd-microservices/user-service/k8s/deployment.yaml
-                    kubectl apply -f cicd-microservices/user-service/k8s/service.yaml
-                    kubectl rollout status deployment/user-service -n microservices --timeout=120s
-                    """
-                }
-            }
-        }
+        // stage('Deploy to Kubernetes') {
+        //     steps {
+        //         withCredentials([file(
+        //             credentialsId: 'kubeconfig-credentials',
+        //             variable: 'KUBECONFIG'
+        //         )]) {
+        //             sh """
+        //             kubectl apply -f cicd-microservices/user-service/k8s/deployment.yaml
+        //             kubectl apply -f cicd-microservices/user-service/k8s/service.yaml
+        //             kubectl rollout status deployment/user-service -n microservices --timeout=120s
+        //             """
+        //         }
+        //     }
+        // }
 
+        stage('Deploy to Kubernetes') {
+    steps {
+        withCredentials([file(credentialsId: 'kubeconfig-credentials', variable: 'KUBECONFIG_FILE')]) {
+            sh '''
+            export KUBECONFIG=$KUBECONFIG_FILE
+
+            echo "Using kubeconfig:"
+            kubectl config view
+
+            kubectl apply -f cicd-microservices/user-service/k8s/deployment.yaml
+            kubectl apply -f cicd-microservices/user-service/k8s/service.yaml
+            kubectl rollout status deployment/user-service -n microservices --timeout=120s
+            '''
+        }
+    }
+}
         stage('Verify Deployment') {
             steps {
                 withCredentials([file(
