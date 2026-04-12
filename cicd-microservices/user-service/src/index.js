@@ -17,7 +17,7 @@ let users = [
   { id: 3, name: 'Charlie Brown', email: 'charlie@example.com', role: 'customer', createdAt: '2025-03-10T09:15:00Z' },
   { id: 4, name: 'Diana Ross', email: 'diana@example.com', role: 'manager', createdAt: '2025-04-05T16:00:00Z' },
   { id: 5, name: 'Eve Williams', email: 'eve@example.com', role: 'customer', createdAt: '2025-05-12T11:20:00Z' },
-  { id: 6, name: 'Frank', email: 'frank@example.com', role: 'customer', createdAt: '2025-04-12T00:00:00Z' }.
+  { id: 6, name: 'Frank', email: 'frank@example.com', role: 'customer', createdAt: '2025-04-12T00:00:00Z' },
 ];
 let nextId = 6;
 
