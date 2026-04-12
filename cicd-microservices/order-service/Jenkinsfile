@@ -8,19 +8,20 @@ pipeline {
 
     stages {
 
-        stage('Checkout') {
-            steps {
-                checkout scm
-                script {
-                    env.GIT_SHORT_COMMIT = sh(
-                        script: "git rev-parse --short HEAD",
-                        returnStdout: true
-                    ).trim()
-                }
-                env.DOCKER_TAG = "${BUILD_NUMBER}-${env.GIT_SHORT_COMMIT}"
-                echo "Checked out commit: ${env.GIT_SHORT_COMMIT}"
-            }
+       stage('Checkout') {
+    steps {
+        checkout scm
+        script {
+            env.GIT_SHORT_COMMIT = sh(
+                script: "git rev-parse --short HEAD",
+                returnStdout: true
+            ).trim()
+
+            env.DOCKER_TAG = "${BUILD_NUMBER}-${env.GIT_SHORT_COMMIT}"
         }
+        echo "Checked out commit: ${env.GIT_SHORT_COMMIT}"
+    }
+}
 
         stage('Install Dependencies') {
             steps {
