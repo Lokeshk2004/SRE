@@ -19,7 +19,7 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 dir('payment-service') {
-                    sh 'npm ci'
+                    sh 'npm install'
                 }
             }
         }
