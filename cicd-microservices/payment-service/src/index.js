@@ -100,7 +100,7 @@ app.post('/', (req, res) => {
     createdAt: new Date().toISOString()
   };
   payments.push(newPayment);
-  console.log(`[PAYMENT-SERVICE] POST / — created payment ${newPayment.transactionId}`);
+  console.log(`[PAYMENT-SERVICE] POST / — created payment ${newPayment.transactionId} for $${amount}`);
   res.status(201).json({ success: true, data: newPayment });
 });
 

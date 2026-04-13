@@ -1,6 +1,4 @@
-/* ========================================
    CSS Variables & Design Tokens
-   ======================================== */
 :root {
   --bg-primary: #0f0f1a;
   --bg-secondary: #1a1a2e;
@@ -31,9 +29,7 @@
   --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
-/* ========================================
    Reset & Base Styles
-   ======================================== */
 *, *::before, *::after {
   margin: 0;
   padding: 0;
@@ -53,18 +49,14 @@ body {
   overflow: hidden;
 }
 
-/* ========================================
    App Layout
-   ======================================== */
 .app {
   display: flex;
   height: 100vh;
   width: 100vw;
 }
 
-/* ========================================
    Sidebar
-   ======================================== */
 .sidebar {
   width: var(--sidebar-width);
   background: var(--bg-sidebar);
@@ -195,9 +187,7 @@ body {
   50% { opacity: 0.5; }
 }
 
-/* ========================================
    Main Content
-   ======================================== */
 .main-content {
   flex: 1;
   display: flex;
@@ -206,9 +196,7 @@ body {
   overflow-x: hidden;
 }
 
-/* ========================================
    Header
-   ======================================== */
 .header {
   display: flex;
   align-items: center;
@@ -265,9 +253,7 @@ body {
   color: var(--text-muted);
 }
 
-/* ========================================
    Sections
-   ======================================== */
 .section {
   padding: 24px 32px;
   animation: fadeIn 0.3s ease;
@@ -282,9 +268,7 @@ body {
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* ========================================
    Stats Grid
-   ======================================== */
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -355,9 +339,7 @@ body {
   margin-top: 2px;
 }
 
-/* ========================================
    Cards Grid
-   ======================================== */
 .cards-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -385,9 +367,7 @@ body {
   padding: 20px 24px;
 }
 
-/* ========================================
    Health Cards
-   ======================================== */
 .health-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -459,9 +439,7 @@ body {
   font-weight: 500;
 }
 
-/* ========================================
    Health Summary (Dashboard)
-   ======================================== */
 .health-summary-item {
   display: flex;
   align-items: center;
@@ -506,9 +484,7 @@ body {
   color: var(--text-muted);
 }
 
-/* ========================================
    Recent Orders (Dashboard)
-   ======================================== */
 .recent-order-item {
   display: flex;
   align-items: center;
@@ -545,9 +521,7 @@ body {
 .order-status-badge.processing { background: rgba(243, 156, 18, 0.15); color: var(--warning); }
 .order-status-badge.pending { background: rgba(160, 163, 177, 0.15); color: var(--text-secondary); }
 
-/* ========================================
    Data Tables
-   ======================================== */
 .table-wrapper {
   overflow-x: auto;
 }
@@ -580,9 +554,7 @@ body {
   background: rgba(108, 99, 255, 0.04);
 }
 
-/* ========================================
    Loading & Error States
-   ======================================== */
 .loading-text {
   color: var(--text-muted);
   font-size: 14px;
@@ -597,9 +569,7 @@ body {
   padding: 32px;
 }
 
-/* ========================================
    Responsive
-   ======================================== */
 @media (max-width: 1200px) {
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);

@@ -15,7 +15,7 @@ let orders = [
   { id: 3, userId: 1, product: 'USB-C Hub', quantity: 1, price: 49.99, status: 'processing', createdAt: '2025-03-01T15:45:00Z' },
   { id: 4, userId: 3, product: 'Mechanical Keyboard', quantity: 1, price: 149.99, status: 'pending', createdAt: '2025-03-18T10:00:00Z' },
   { id: 5, userId: 5, product: 'Monitor 27"', quantity: 1, price: 399.99, status: 'delivered', createdAt: '2025-04-02T09:20:00Z' },
-  { id: 6, userId: 2, product: 'Webcam ', quantity: 1, price: 79.99, status: 'shipped', createdAt: '2025-04-10T14:10:00Z' }
+  { id: 6, userId: 2, product: 'Webcam HD', quantity: 1, price: 79.99, status: 'shipped', createdAt: '2025-04-10T14:10:00Z' }
 ];
 let nextId = 7;
 

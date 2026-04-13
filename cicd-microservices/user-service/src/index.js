@@ -14,8 +14,7 @@ let users = [
   { id: 2, name: 'Bob Smith', email: 'bob@example.com', role: 'customer', createdAt: '2025-02-20T14:45:00Z' },
   { id: 3, name: 'Charlie Brown', email: 'charlie@example.com', role: 'customer', createdAt: '2025-03-10T09:15:00Z' },
   { id: 4, name: 'Diana Ross', email: 'diana@example.com', role: 'manager', createdAt: '2025-04-05T16:00:00Z' },
-  { id: 5, name: 'Eve Williams', email: 'eve@example.com', role: 'customer', createdAt: '2025-05-12T11:20:00Z' },
-  { id: 6, name: 'Frank', email: 'frank@example.com', role: 'customer', createdAt: '2025-04-12T00:00:00Z' },
+  { id: 5, name: 'Eve Williams', email: 'eve@example.com', role: 'customer', createdAt: '2025-05-12T11:20:00Z' }
 ];
 let nextId = 6;
 
@@ -49,13 +48,11 @@ app.use((req, res, next) => {
   next();
 });
 
-// GET all users
 app.get('/', (req, res) => {
   console.log(`[USER-SERVICE] GET / — returning ${users.length} users`);
   res.json({ success: true, count: users.length, data: users });
 });
 
-// GET user by ID
 app.get('/:id', (req, res) => {
   const user = users.find(u => u.id === parseInt(req.params.id));
   if (!user) {
@@ -64,7 +61,6 @@ app.get('/:id', (req, res) => {
   res.json({ success: true, data: user });
 });
 
-// POST create user
 app.post('/', (req, res) => {
   const { name, email, role } = req.body;
   if (!name || !email) {
@@ -82,7 +78,6 @@ app.post('/', (req, res) => {
   res.status(201).json({ success: true, data: newUser });
 });
 
-// PUT update user
 app.put('/:id', (req, res) => {
   const index = users.findIndex(u => u.id === parseInt(req.params.id));
   if (index === -1) {
@@ -99,11 +94,9 @@ app.delete('/:id', (req, res) => {
     return res.status(404).json({ success: false, message: 'User not found' });
   }
   const deleted = users.splice(index, 1)[0];
-  console.log(`[USER-SERVICE] DELETE /${req.params.id} — deleted user ${deleted.name}`);
   res.json({ success: true, data: deleted });
 });
 
-// Start server
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`[USER-SERVICE] Running on port ${PORT}`);
 });
