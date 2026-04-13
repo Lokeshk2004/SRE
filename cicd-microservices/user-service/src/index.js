@@ -5,12 +5,10 @@ const morgan = require('morgan');
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// Middleware
 app.use(cors());
 app.use(express.json());
 app.use(morgan('combined'));
 
-// In-memory data store
 let users = [
   { id: 1, name: 'Alice Johnson', email: 'alice@example.com', role: 'admin', createdAt: '2025-01-15T10:30:00Z' },
   { id: 2, name: 'Bob Smith', email: 'bob@example.com', role: 'customer', createdAt: '2025-02-20T14:45:00Z' },
@@ -21,7 +19,6 @@ let users = [
 ];
 let nextId = 6;
 
-// Health check endpoint
 app.get('/health', (req, res) => {
   res.status(200).json({
     status: 'healthy',
@@ -53,13 +50,13 @@ app.use((req, res, next) => {
   next();
 });
 
-// GET all users
+// GET
 app.get('/', (req, res) => {
   console.log(`[USER-SERVICE] GET / — returning ${users.length} users`);
   res.json({ success: true, count: users.length, data: users });
 });
 
-// GET user by ID
+// GET user by ids
 app.get('/:id', (req, res) => {
   const user = users.find(u => u.id === parseInt(req.params.id));
   if (!user) {
@@ -70,7 +67,7 @@ app.get('/:id', (req, res) => {
   res.json({ success: true, data: user });
 });
 
-// POST create user
+// POST->create user
 app.post('/', (req, res) => {
   const { name, email, role } = req.body;
   if (!name || !email) {
@@ -88,7 +85,7 @@ app.post('/', (req, res) => {
   res.status(201).json({ success: true, data: newUser });
 });
 
-// PUT update user
+// PUT-> for-update user
 app.put('/:id', (req, res) => {
   const index = users.findIndex(u => u.id === parseInt(req.params.id));
   if (index === -1) {
@@ -111,7 +108,7 @@ app.delete('/:id', (req, res) => {
   res.json({ success: true, data: deleted });
 });
 
-// Start server
+// too start server
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`[USER-SERVICE] Running on port ${PORT}`);
   console.log(`[USER-SERVICE] Health check: http://localhost:${PORT}/health`);
