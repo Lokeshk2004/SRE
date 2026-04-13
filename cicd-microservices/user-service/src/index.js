@@ -14,9 +14,10 @@ let users = [
   { id: 2, name: 'Bob Smith', email: 'bob@example.com', role: 'customer', createdAt: '2025-02-20T14:45:00Z' },
   { id: 3, name: 'Charlie Brown', email: 'charlie@example.com', role: 'customer', createdAt: '2025-03-10T09:15:00Z' },
   { id: 4, name: 'Diana Ross', email: 'diana@example.com', role: 'manager', createdAt: '2025-04-05T16:00:00Z' },
-  { id: 5, name: 'Eve Williams', email: 'eve@example.com', role: 'customer', createdAt: '2025-05-12T11:20:00Z' }
+  { id: 5, name: 'Eve Williams', email: 'eve@example.com', role: 'customer', createdAt: '2025-05-12T11:20:00Z' },
+  { id: 6, name: 'Ajay Williams', email: 'ajay@example.com', role: 'customer', createdAt: '2025-05-12T11:20:00Z' }
 ];
-let nextId = 6;
+let nextId = 7;
 
 app.get('/health', (req, res) => {
   res.status(200).json({
