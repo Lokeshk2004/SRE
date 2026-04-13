@@ -14,9 +14,10 @@ let payments = [
   { id: 2, orderId: 2, userId: 2, amount: 59.98, method: 'paypal', status: 'completed', transactionId: 'TXN-20250214-002', createdAt: '2025-02-14T12:35:00Z' },
   { id: 3, orderId: 3, userId: 1, amount: 49.99, method: 'debit_card', status: 'pending', transactionId: 'TXN-20250301-003', createdAt: '2025-03-01T15:50:00Z' },
   { id: 4, orderId: 5, userId: 5, amount: 399.99, method: 'credit_card', status: 'completed', transactionId: 'TXN-20250402-004', createdAt: '2025-04-02T09:25:00Z' },
-  { id: 5, orderId: 6, userId: 2, amount: 79.99, method: 'bank_transfer', status: 'processing', transactionId: 'TXN-20250410-005', createdAt: '2025-04-10T14:15:00Z' }
+  { id: 5, orderId: 6, userId: 2, amount: 79.99, method: 'bank_transfer', status: 'processing', transactionId: 'TXN-20250410-005', createdAt: '2025-04-10T14:15:00Z' },
+  { id: 6, orderId: 7, userId: 3, amount: 199.99, method: 'credit_card', status: 'completed', transactionId: 'TXN-20250411-006', createdAt: '2025-04-11T10:20:00Z' }
 ];
-let nextId = 6;
+let nextId = 7;
 
 function generateTransactionId() {
   const now = new Date();
