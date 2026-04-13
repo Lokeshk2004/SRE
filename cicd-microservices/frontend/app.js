@@ -10,6 +10,8 @@ const HEALTH_ENDPOINTS = [
   { name: 'Payment Service', url: '/api/payments/health', key: 'payment' }
 ];
 
+//state
+
 const state = {
   currentSection: 'dashboard',
   users: [],
