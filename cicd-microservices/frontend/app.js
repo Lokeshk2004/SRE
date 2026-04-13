@@ -10,7 +10,7 @@ const HEALTH_ENDPOINTS = [
   { name: 'Payment Service', url: '/api/payments/health', key: 'payment' }
 ];
 
-//state
+//state to store all
 
 const state = {
   currentSection: 'dashboard',
@@ -36,7 +36,7 @@ function navigateTo(section) {
   document.getElementById(`section-${section}`).classList.remove('hidden');
 
   const titles = {
-    dashboard: { title: 'Dashboard', subtitle: 'Overview of all microservices' },
+    dashboard: { title: 'Dashboard', subtitle: 'Overview of all microservices here' },
     users: { title: 'Users', subtitle: 'Manage user accounts' },
     orders: { title: 'Orders', subtitle: 'Track and manage orders' },
     payments: { title: 'Payments', subtitle: 'Payment transactions' },
