@@ -13,11 +13,4 @@ metadata:
   labels:
     project: cicd-microservices
     purpose: monitoring
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: logging
-  labels:
-    project: cicd-microservices
-    purpose: logging
+

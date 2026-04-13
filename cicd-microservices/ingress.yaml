@@ -14,7 +14,6 @@ spec:
   rules:
     - http:
         paths:
-          # Frontend — serves at root
           - path: /()(.*)
             pathType: ImplementationSpecific
             backend:
@@ -22,7 +21,6 @@ spec:
                 name: frontend-service
                 port:
                   number: 80
-          # User Service API
           - path: /api/users(/|$)(.*)
             pathType: ImplementationSpecific
             backend:
@@ -30,7 +28,6 @@ spec:
                 name: user-service
                 port:
                   number: 3001
-          # Order Service API
           - path: /api/orders(/|$)(.*)
             pathType: ImplementationSpecific
             backend:
@@ -38,7 +35,6 @@ spec:
                 name: order-service
                 port:
                   number: 3002
-          # Payment Service API
           - path: /api/payments(/|$)(.*)
             pathType: ImplementationSpecific
             backend:

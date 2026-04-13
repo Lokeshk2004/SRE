@@ -1,9 +1,7 @@
-# Stage 1: Build (just organize files)
 FROM node:18-alpine AS builder
 WORKDIR /app
 COPY index.html style.css app.js ./
 
-# Stage 2: Production with Nginx
 FROM nginx:1.25-alpine AS production
 RUN rm -rf /usr/share/nginx/html/*
 COPY --from=builder /app/index.html /usr/share/nginx/html/

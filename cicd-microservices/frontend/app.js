@@ -1,20 +1,20 @@
+// =========================================
+// MicroDash — Frontend Dashboard Application
+// =========================================
 
+// API Base URLs — these are routed through the Ingress controller
 const API_BASE = {
   users: '/api/users',
   orders: '/api/orders',
   payments: '/api/payments'
 };
 
-// Service health endpoints
 const HEALTH_ENDPOINTS = [
   { name: 'User Service', url: '/api/users/health', key: 'user' },
   { name: 'Order Service', url: '/api/orders/health', key: 'order' },
   { name: 'Payment Service', url: '/api/payments/health', key: 'payment' }
 ];
 
-// =========================================
-// State Management
-// =========================================
 const state = {
   currentSection: 'dashboard',
   users: [],
@@ -23,9 +23,6 @@ const state = {
   health: {}
 };
 
-// =========================================
-// Navigation
-// =========================================
 document.querySelectorAll('.nav-item').forEach(item => {
   item.addEventListener('click', (e) => {
     e.preventDefault();
@@ -35,15 +32,12 @@ document.querySelectorAll('.nav-item').forEach(item => {
 });
 
 function navigateTo(section) {
-  // Update nav active state
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   document.querySelector(`[data-section="${section}"]`).classList.add('active');
 
-  // Show/hide sections
   document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
   document.getElementById(`section-${section}`).classList.remove('hidden');
 
-  // Update header
   const titles = {
     dashboard: { title: 'Dashboard', subtitle: 'Overview of all microservices' },
     users: { title: 'Users', subtitle: 'Manage user accounts' },
@@ -58,9 +52,6 @@ function navigateTo(section) {
   loadSectionData(section);
 }
 
-// =========================================
-// Data Fetching
-// =========================================
 async function fetchJSON(url) {
   try {
     const response = await fetch(url, { signal: AbortSignal.timeout(5000) });
@@ -85,9 +76,6 @@ async function checkHealth(endpoint) {
   }
 }
 
-// =========================================
-// Load Section Data
-// =========================================
 async function loadSectionData(section) {
   switch (section) {
     case 'dashboard': await loadDashboard(); break;
@@ -99,11 +87,7 @@ async function loadSectionData(section) {
   updateTimestamp();
 }
 
-// =========================================
-// Dashboard
-// =========================================
 async function loadDashboard() {
-  // Fetch all data in parallel
   const [usersData, ordersData, paymentsData, ...healthResults] = await Promise.all([
     fetchJSON(API_BASE.users),
     fetchJSON(API_BASE.orders),
@@ -111,18 +95,15 @@ async function loadDashboard() {
     ...HEALTH_ENDPOINTS.map(ep => checkHealth(ep))
   ]);
 
-  // Update stats
   document.getElementById('stat-users-count').textContent = usersData ? usersData.count : '—';
   document.getElementById('stat-orders-count').textContent = ordersData ? ordersData.count : '—';
   document.getElementById('stat-payments-count').textContent = paymentsData ? paymentsData.count : '—';
   document.getElementById('stat-revenue-amount').textContent = paymentsData ? `$${paymentsData.totalRevenue}` : '—';
 
-  // Save state
   if (usersData) state.users = usersData.data;
   if (ordersData) state.orders = ordersData.data;
   if (paymentsData) state.payments = paymentsData.data;
 
-  // Health summary
   const healthSummaryEl = document.getElementById('health-summary');
   healthSummaryEl.innerHTML = healthResults.map((h, i) => `
     <div class="health-summary-item">
@@ -134,7 +115,6 @@ async function loadDashboard() {
     </div>
   `).join('');
 
-  // Update overall status
   const allHealthy = healthResults.every(h => h.healthy);
   const someHealthy = healthResults.some(h => h.healthy);
   const statusDot = document.getElementById('overall-status-dot');
@@ -142,7 +122,6 @@ async function loadDashboard() {
   statusDot.className = 'status-dot ' + (allHealthy ? 'healthy' : someHealthy ? 'degraded' : 'down');
   statusText.textContent = allHealthy ? 'All Systems Go' : someHealthy ? 'Degraded' : 'Systems Down';
 
-  // Recent orders
   const recentOrdersEl = document.getElementById('recent-orders-list');
   if (ordersData && ordersData.data.length > 0) {
     const recent = ordersData.data.slice(-5).reverse();
@@ -158,9 +137,6 @@ async function loadDashboard() {
   }
 }
 
-// =========================================
-// Users Table
-// =========================================
 async function loadUsers() {
   const tbody = document.getElementById('users-table-body');
   tbody.innerHTML = '<tr><td colspan="5" class="loading-text">Loading users...</td></tr>';
@@ -183,9 +159,6 @@ async function loadUsers() {
   `).join('');
 }
 
-// =========================================
-// Orders Table
-// =========================================
 async function loadOrders() {
   const tbody = document.getElementById('orders-table-body');
   tbody.innerHTML = '<tr><td colspan="7" class="loading-text">Loading orders...</td></tr>';
@@ -210,9 +183,6 @@ async function loadOrders() {
   `).join('');
 }
 
-// =========================================
-// Payments Table
-// =========================================
 async function loadPayments() {
   const tbody = document.getElementById('payments-table-body');
   tbody.innerHTML = '<tr><td colspan="7" class="loading-text">Loading payments...</td></tr>';
@@ -237,9 +207,6 @@ async function loadPayments() {
   `).join('');
 }
 
-// =========================================
-// Health Details
-// =========================================
 async function loadHealthDetails() {
   const grid = document.getElementById('health-detail-grid');
   grid.innerHTML = HEALTH_ENDPOINTS.map(ep => `
@@ -254,7 +221,6 @@ async function loadHealthDetails() {
     </div>
   `).join('');
 
-  // Check each health endpoint
   for (const ep of HEALTH_ENDPOINTS) {
     const result = await checkHealth(ep);
     state.health[ep.key] = result;
@@ -301,7 +267,6 @@ async function loadHealthDetails() {
     }
   }
 
-  // Update overall status
   const allHealthy = Object.values(state.health).every(h => h.healthy);
   const someHealthy = Object.values(state.health).some(h => h.healthy);
   const statusDot = document.getElementById('overall-status-dot');
@@ -310,9 +275,6 @@ async function loadHealthDetails() {
   statusText.textContent = allHealthy ? 'All Systems Go' : someHealthy ? 'Degraded' : 'Systems Down';
 }
 
-// =========================================
-// Utilities
-// =========================================
 function formatUptime(seconds) {
   if (!seconds && seconds !== 0) return '—';
   const h = Math.floor(seconds / 3600);
@@ -327,23 +289,14 @@ function updateTimestamp() {
   document.getElementById('last-updated').textContent = `Last updated: ${new Date().toLocaleTimeString()}`;
 }
 
-// =========================================
-// Refresh Button
-// =========================================
 document.getElementById('btn-refresh').addEventListener('click', () => {
   loadSectionData(state.currentSection);
 });
 
-// =========================================
-// Auto-Refresh every 30 seconds
-// =========================================
 setInterval(() => {
   loadSectionData(state.currentSection);
 }, 30000);
 
-// =========================================
-// Initial Load
-// =========================================
 document.addEventListener('DOMContentLoaded', () => {
   loadDashboard();
 });

@@ -1,11 +1,9 @@
-# Stage 1: Build
 FROM node:18-alpine AS builder
 WORKDIR /app
 COPY package*.json ./
 RUN npm install 
 COPY src/ ./src/
 
-# Stage 2: Production
 FROM node:18-alpine AS production
 RUN addgroup -g 1001 appgroup && adduser -u 1001 -G appgroup -D appuser
 WORKDIR /app

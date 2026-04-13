@@ -28,7 +28,6 @@ app.get('/health', (req, res) => {
   });
 });
 
-// Metrics endpoint for Prometheus
 app.get('/metrics', (req, res) => {
   res.set('Content-Type', 'text/plain');
   res.send(
@@ -50,24 +49,22 @@ app.use((req, res, next) => {
   next();
 });
 
-// GET
+// GET all users
 app.get('/', (req, res) => {
   console.log(`[USER-SERVICE] GET / — returning ${users.length} users`);
   res.json({ success: true, count: users.length, data: users });
 });
 
-// GET user by ids
+// GET user by ID
 app.get('/:id', (req, res) => {
   const user = users.find(u => u.id === parseInt(req.params.id));
   if (!user) {
-    console.log(`[USER-SERVICE] GET /${req.params.id} — not found`);
     return res.status(404).json({ success: false, message: 'User not found' });
   }
-  console.log(`[USER-SERVICE] GET /${req.params.id} — found ${user.name}`);
   res.json({ success: true, data: user });
 });
 
-// POST->create user
+// POST create user
 app.post('/', (req, res) => {
   const { name, email, role } = req.body;
   if (!name || !email) {
@@ -85,7 +82,7 @@ app.post('/', (req, res) => {
   res.status(201).json({ success: true, data: newUser });
 });
 
-// PUT-> for-update user
+// PUT update user
 app.put('/:id', (req, res) => {
   const index = users.findIndex(u => u.id === parseInt(req.params.id));
   if (index === -1) {
@@ -93,11 +90,9 @@ app.put('/:id', (req, res) => {
   }
   const { name, email, role } = req.body;
   users[index] = { ...users[index], name: name || users[index].name, email: email || users[index].email, role: role || users[index].role };
-  console.log(`[USER-SERVICE] PUT /${req.params.id} — updated user`);
   res.json({ success: true, data: users[index] });
 });
 
-// DELETE user
 app.delete('/:id', (req, res) => {
   const index = users.findIndex(u => u.id === parseInt(req.params.id));
   if (index === -1) {
@@ -108,9 +103,7 @@ app.delete('/:id', (req, res) => {
   res.json({ success: true, data: deleted });
 });
 
-// too start server
+// Start server
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`[USER-SERVICE] Running on port ${PORT}`);
-  console.log(`[USER-SERVICE] Health check: http://localhost:${PORT}/health`);
-  console.log(`[USER-SERVICE] Metrics: http://localhost:${PORT}/metrics`);
 });

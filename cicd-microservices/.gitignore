@@ -1,0 +1,35 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Docker
+*.tar
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Environment
+.env
+.env.*
+
+# Temporary
+tmp/
+*.tmp
+
+# Kubernetes secrets
+kubeconfig.yaml
+kubeconfig
+
+# Jenkins
+jenkins_home/
+
+# Documentation (local reference only)
+docs/
