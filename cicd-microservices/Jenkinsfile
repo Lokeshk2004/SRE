@@ -1,0 +1,124 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_USER = 'lokeshkdevops'
+    }
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                checkout scm
+                script {
+                    env.GIT_SHORT_COMMIT = sh(
+                        script: "git rev-parse --short HEAD",
+                        returnStdout: true
+                    ).trim()
+                }
+                echo "Commit: ${env.GIT_SHORT_COMMIT}"
+            }
+        }
+
+        stage('Detect Changes') {
+            steps {
+                script {
+                    def changedFiles = sh(
+                        script: "git diff --name-only HEAD~1",
+                        returnStdout: true
+                    ).trim()
+
+                    echo "Changed files:\n${changedFiles}"
+
+                    env.USER_CHANGED     = changedFiles.contains("user-service") ? "true" : "false"
+                    env.ORDER_CHANGED    = changedFiles.contains("order-service") ? "true" : "false"
+                    env.PAYMENT_CHANGED  = changedFiles.contains("payment-service") ? "true" : "false"
+                    env.FRONTEND_CHANGED = changedFiles.contains("frontend") ? "true" : "false"
+                }
+            }
+        }
+
+        stage('Build & Deploy') {
+            parallel {
+
+                stage('User Service') {
+                    when { expression { env.USER_CHANGED == "true" } }
+                    steps {
+                        buildAndDeploy("user-service", 3001)
+                    }
+                }
+
+                stage('Order Service') {
+                    when { expression { env.ORDER_CHANGED == "true" } }
+                    steps {
+                        buildAndDeploy("order-service", 3002)
+                    }
+                }
+
+                stage('Payment Service') {
+                    when { expression { env.PAYMENT_CHANGED == "true" } }
+                    steps {
+                        buildAndDeploy("payment-service", 3003)
+                    }
+                }
+
+                stage('Frontend') {
+                    when { expression { env.FRONTEND_CHANGED == "true" } }
+                    steps {
+                        buildAndDeploy("frontend", 80)
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            sh 'docker logout || true'
+            cleanWs()
+        }
+    }
+}
+
+def buildAndDeploy(service, port) {
+
+    def path  = "cicd-microservices/${service}"
+    def image = "lokeshkdevops/${service}"
+    def tag   = "${env.GIT_SHORT_COMMIT}"
+
+    withCredentials([
+        usernamePassword(
+            credentialsId: 'docker-hub-credentials',
+            usernameVariable: 'DOCKER_USER',
+            passwordVariable: 'DOCKER_PASS'
+        ),
+        file(credentialsId: 'kubeconfig-credentials', variable: 'KUBECONFIG_FILE')
+    ]) {
+
+        dir(path) {
+            sh """
+            echo "Building ${service}..."
+
+            docker build -t ${image}:${tag} -t ${image}:latest .
+
+            echo \$DOCKER_PASS | docker login -u \$DOCKER_USER --password-stdin
+
+            docker push ${image}:${tag}
+            docker push ${image}:latest
+            """
+        }
+
+        sh """
+        export KUBECONFIG=\$KUBECONFIG_FILE
+
+        echo "Deploying ${service}..."
+
+        kubectl set image deployment/${service} \
+        ${service}=${image}:${tag} \
+        -n microservices
+
+        kubectl rollout status deployment/${service} \
+        -n microservices --timeout=120s
+        """
+    }
+}
